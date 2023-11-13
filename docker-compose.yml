@@ -1,0 +1,88 @@
+version: "3.8"
+services:
+  postgres-local:
+    image: postgres
+    container_name: postgres-local
+    restart: always
+    ports:
+      - "5439:5432"
+    env_file:
+      - .env
+
+  zookeeper-local:
+    image: confluentinc/cp-zookeeper:latest
+    user: "0:0"
+    container_name: zookeeper-local
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "22181:2181"
+    volumes:
+      - "./kafka/data/zookeeper/data:/data"
+      - "./kafka/data/zookeeper/datalog:/datalog"
+
+  kafka-local:
+    image: confluentinc/cp-kafka:latest
+    user: "0:0"
+    container_name: kafka-local
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper-local:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-local:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - "./kafka/data/kafka/data:/var/lib/kafka/data"
+    depends_on:
+      - zookeeper-local
+
+  jvm-account-api:
+    container_name: account-api-local
+    ports:
+      - "9040:9040"
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-account
+    volumes:
+      - ../..:/workspaces:cached
+    environment:
+      DUMMY: DUMMY
+    depends_on:
+      - postgres-local
+      - zookeeper-local
+      - kafka-local
+    command: sleep infinity
+
+  jvm-mono-log-api:
+    container_name: mono-log-api-local
+    ports:
+      - "9020:9020"
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-mono-log
+    volumes:
+      - ../..:/workspaces:cached
+    depends_on:
+      - postgres-local
+      - zookeeper-local
+      - kafka-local
+    command: sleep infinity
+
+  jvm-transaction-api:
+    container_name: transaction-api-local
+    ports:
+      - "9030:9030"
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-transaction
+    volumes:
+      - ../..:/workspaces:cached
+    depends_on:
+      - postgres-local
+      - zookeeper-local
+      - kafka-local
+    command: sleep infinity

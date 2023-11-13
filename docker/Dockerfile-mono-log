@@ -1,0 +1,11 @@
+FROM gradle:8.4.0-jdk17 as build
+COPY --chown=gradle:gradle .. /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle build
+
+FROM openjdk:17 as build-mono-log
+RUN mkdir /app
+COPY --from=build /home/gradle/src/backend/mono-log/app/build/libs/jvm-mono-log-api-1.0.0-SNAPSHOT-fat.jar /app/jvm-mono-log-api-1.0.0-SNAPSHOT.jar
+COPY .env.docker-run /.env
+ENTRYPOINT ["java", "-jar", "app/jvm-mono-log-api-1.0.0-SNAPSHOT.jar"]
+EXPOSE 9020

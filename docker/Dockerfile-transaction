@@ -1,0 +1,11 @@
+FROM gradle:8.4.0-jdk17 as build
+COPY --chown=gradle:gradle .. /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle build
+
+FROM openjdk:17 as build-transaction
+RUN mkdir /app
+COPY --from=build /home/gradle/src/backend/transaction/app/build/libs/jvm-transaction-api-1.0.0-SNAPSHOT-fat.jar /app/jvm-transaction-api-1.0.0-SNAPSHOT.jar
+COPY .env.docker-run /.env
+ENTRYPOINT ["java", "-jar", "app/jvm-transaction-api-1.0.0-SNAPSHOT.jar"]
+EXPOSE 9030
