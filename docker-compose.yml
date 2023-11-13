@@ -10,7 +10,7 @@ services:
       - .env
 
   zookeeper-local:
-    image: confluentinc/cp-zookeeper:latest
+    image: confluentinc/cp-zookeeper:7.5.1
     user: "0:0"
     container_name: zookeeper-local
     environment:
@@ -19,11 +19,11 @@ services:
     ports:
       - "22181:2181"
     volumes:
-      - "./kafka/data/zookeeper/data:/data"
-      - "./kafka/data/zookeeper/datalog:/datalog"
+      - "./kafka-local/data/zookeeper/data:/data"
+      - "./kafka-local/data/zookeeper/datalog:/datalog"
 
   kafka-local:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.5.1
     user: "0:0"
     container_name: kafka-local
     ports:
@@ -31,12 +31,12 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-local:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-local:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-local:9092,PLAINTEXT_HOST://kafka-local:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     volumes:
-      - "./kafka/data/kafka/data:/var/lib/kafka/data"
+      - "./kafka-local/data/kafka/data:/var/lib/kafka/data"
     depends_on:
       - zookeeper-local
 

@@ -10,10 +10,11 @@ import org.xepelin_bank.infrastructure.flyway.config.mappers.DataBaseConfigMappe
 import org.xepelin_bank.infrastructure.vertx.database.PGClient
 import org.xepelin_bank.infrastructure.vertx.database.PGClientImpl
 import org.xepelin_bank.infrastructure.vertx.database.mappers.CredentialDBMapper
+import org.xepelin_bank.infrastructure.vertx.kafka.KafkaConsumerClient
 import org.xepelin_bank.infrastructure.vertx.kafka.KafkaProducerClient
 import org.xepelin_bank.infrastructure.vertx.kafka.configure.KafkaConfig
 import org.xepelin_bank.infrastructure.vertx.kafka.configure.KafkaConfigEnv
-import org.xepelin_bank.infrastructure.vertx.kafka.impl.KafkaConsumerListener
+import org.xepelin_bank.infrastructure.vertx.kafka.impl.KafkaConsumerClientImpl
 import org.xepelin_bank.infrastructure.vertx.kafka.impl.KafkaProducerClientImpl
 import org.xepelin_bank.transaction.adapter.config.TransactionConfig
 import org.xepelin_bank.transaction.adapter.config.TransactionConfigEnv
@@ -33,9 +34,10 @@ abstract class AbstractModule(private val vertx: Vertx) : AbstractModule() {
 
         bind(PGClient::class.java).to(PGClientImpl::class.java).`in`(Singleton::class.java)
         bind(Migration::class.java).to(FlywayMigration::class.java).`in`(Singleton::class.java)
+
         bind(KafkaProducerClient::class.java).to(KafkaProducerClientImpl::class.java).`in`(Singleton::class.java)
-        bind(KafkaConsumerListener::class.java).to(KafkaConsumerListener::class.java).`in`(Singleton::class.java)
-        
+        bind(KafkaConsumerClient::class.java).to(KafkaConsumerClientImpl::class.java).`in`(Singleton::class.java)
+
         routers()
         repository()
         factory()
