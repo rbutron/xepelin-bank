@@ -24,11 +24,11 @@ abstract class AbstractModule(private val vertx: Vertx) : AbstractModule() {
     private val accountConfig: AccountConfig = AccountConfigEnv()
 
     abstract fun routers()
-    
+
     abstract fun factory()
-    
+
     abstract fun repository()
-    
+
     final override fun configure() {
         bind(Vertx::class.java).toInstance(vertx)
 
@@ -38,26 +38,28 @@ abstract class AbstractModule(private val vertx: Vertx) : AbstractModule() {
         bind(KafkaProducerClient::class.java).to(KafkaProducerClientImpl::class.java).`in`(Singleton::class.java)
         bind(KafkaConsumerClient::class.java).to(KafkaConsumerClientImpl::class.java).`in`(Singleton::class.java)
 
-        //bind(Listener::class.java).to(AccountListener::class.java).`in`(Singleton::class.java)
-        
         routers()
         repository()
         factory()
     }
-    
+
     @Provides
     private fun getDataBaseConfigMapper(): DataBaseConfigMapper =
-        DataBaseConfigMapper(accountConfig.getDBFull(), accountConfig.getDBUser(), accountConfig.getDBPassword())
+        DataBaseConfigMapper(
+            this.accountConfig.getDBFull(),
+            this.accountConfig.getDBUser(),
+            this.accountConfig.getDBPassword()
+        )
 
     @Provides
     private fun getKafkaConfig(): KafkaConfig = KafkaConfigEnv()
-    
+
     @Provides
     private fun getCredentialDB(): CredentialDBMapper = CredentialDBMapper(
-        accountConfig.getDBPort(),
-        accountConfig.getDBHost(),
-        accountConfig.getDBName(),
-        accountConfig.getDBUser(),
-        accountConfig.getDBPassword()
+        this.accountConfig.getDBPort(),
+        this.accountConfig.getDBHost(),
+        this.accountConfig.getDBName(),
+        this.accountConfig.getDBUser(),
+        this.accountConfig.getDBPassword()
     )
 }

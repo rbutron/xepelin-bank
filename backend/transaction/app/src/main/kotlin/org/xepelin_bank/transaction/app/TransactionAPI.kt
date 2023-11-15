@@ -6,6 +6,7 @@ import org.xepelin_bank.transaction.app.configure.MainTransactionVerticle
 import org.xepelin_bank.common.exceptions.logger.LoggerDelegate
 import org.xepelin_bank.infrastructure.vertx.http.HTTPVerticle.Companion.jsonDeserialize
 import org.xepelin_bank.transaction.adapter.guice.ModuleCreator
+import org.xepelin_bank.transaction.adapter.retriever.listener.TransactionListener
 
 object TransactionAPI {
     private val logger by LoggerDelegate()
@@ -16,7 +17,12 @@ object TransactionAPI {
         jsonDeserialize()
         val injector = Guice.createInjector(ModuleCreator(vertx))
         val main = injector.getInstance(MainTransactionVerticle::class.java)
+        val transactionListener = injector.getInstance(TransactionListener::class.java)
+
         vertx.rxDeployVerticle(main).subscribe(TransactionAPI::logInfo, TransactionAPI::logError)
+
+        transactionListener.listen().subscribe()
+
         Runtime.getRuntime().addShutdownHook(Thread {
             logger.info("Closing application")
             vertx.rxClose().subscribe()

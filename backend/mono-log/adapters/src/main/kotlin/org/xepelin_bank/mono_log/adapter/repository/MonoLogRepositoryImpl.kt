@@ -9,7 +9,7 @@ import org.xepelin_bank.mono_log.adapter.repository.mapper.MonoLogMapper.buildMo
 class MonoLogRepositoryImpl @Inject constructor(private val pg: PGClientImpl):MonoLogRepository {
 
     override fun save(monoLogEntity: MonoLogEntity): Single<MonoLogEntity> =
-        pg.saveOrUpdate(
+        this.pg.saveOrUpdate(
             """
                 INSERT INTO mono_log (business_id,
                         event_type,

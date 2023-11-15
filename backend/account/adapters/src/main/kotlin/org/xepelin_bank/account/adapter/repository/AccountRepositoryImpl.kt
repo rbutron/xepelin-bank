@@ -8,7 +8,7 @@ import org.xepelin_bank.infrastructure.vertx.database.PGClientImpl
 
 class AccountRepositoryImpl @Inject constructor(private val pg: PGClientImpl): AccountRepository {
     override fun save(accountEntity: AccountEntity): Single<AccountEntity> =
-        pg.saveOrUpdate(
+        this.pg.saveOrUpdate(
             """
                 INSERT INTO ledger.account (id,
                         account_name,
@@ -26,7 +26,7 @@ class AccountRepositoryImpl @Inject constructor(private val pg: PGClientImpl): A
         ).map(::buildAccountEntity)
 
     override fun getAccountByNumber(accountNumber: String): Single<AccountEntity> =
-        pg.getOne(
+        this.pg.getOne(
             """
             SELECT a.id,
             a.account_name,

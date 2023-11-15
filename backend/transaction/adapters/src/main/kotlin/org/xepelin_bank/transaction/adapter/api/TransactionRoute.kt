@@ -11,6 +11,6 @@ class TransactionRoute @Inject constructor(
     override fun getPath(): String = "/api"
 
     override fun create(): Router = Router.router(vertx).apply {
-        get("/test")
+        post("/create")
     }
 }

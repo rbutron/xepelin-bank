@@ -22,13 +22,13 @@ import org.xepelin_bank.mono_log.adapter.config.MonoLogConfigEnv
 abstract class AbstractModule(private val vertx: Vertx) : AbstractModule() {
 
     private val config: MonoLogConfig = MonoLogConfigEnv()
-    
+
     abstract fun routers()
-    
+
     abstract fun factory()
-    
+
     abstract fun repository()
-    
+
     final override fun configure() {
         bind(Vertx::class.java).toInstance(vertx)
 
@@ -37,7 +37,7 @@ abstract class AbstractModule(private val vertx: Vertx) : AbstractModule() {
 
         bind(KafkaProducerClient::class.java).to(KafkaProducerClientImpl::class.java).`in`(Singleton::class.java)
         bind(KafkaConsumerClient::class.java).to(KafkaConsumerClientImpl::class.java).`in`(Singleton::class.java)
-        
+
         routers()
         repository()
         factory()
@@ -45,17 +45,17 @@ abstract class AbstractModule(private val vertx: Vertx) : AbstractModule() {
 
     @Provides
     private fun getMigrationMapper(): DataBaseConfigMapper =
-        DataBaseConfigMapper(config.getDBFull(), config.getDBUser(), config.getDBPassword())
+        DataBaseConfigMapper(this.config.getDBFull(), this.config.getDBUser(), this.config.getDBPassword())
 
     @Provides
     private fun getKafkaConfig(): KafkaConfig = KafkaConfigEnv()
 
     @Provides
     private fun credentialDB(): CredentialDBMapper = CredentialDBMapper(
-        config.getDBPort(),
-        config.getDBHost(),
-        config.getDBName(),
-        config.getDBUser(),
-        config.getDBPassword()
+        this.config.getDBPort(),
+        this.config.getDBHost(),
+        this.config.getDBName(),
+        this.config.getDBUser(),
+        this.config.getDBPassword()
     )
 }

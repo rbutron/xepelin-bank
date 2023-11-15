@@ -53,9 +53,18 @@ Asi como vemos en nuestras carpetas de trabajo reducimos estos componentes con e
 
 Para dar marcha a este proyecto debemos tener Java17 y Gradle 8.4.0 (por suerte tenemos Docker :D) para poder asi configurar las dependencias de este.
 
-1. Clonamos el proyecto
-2. Ejecutamos ```docker compose  -f "docker-compose.yml" up -d```
-3. Abrimos nuestra consola y ejecutamos o copiamos estos curls para que se nos faciliten en el postman
+1. Clonamos el proyecto (recuerde que debemos tener Git para ello)
+2. Dentro del proyecto ud debera copiar el archivo `.env.docker-run` (sin eliminarlo) y lo colocara como .env, si uds tambien quiere explorar el proyecto
+   existen dos momentos con los archivo `.env.docker-run` que es solo si ejecuta el docker compose para que despliegue las imagenes
+   de los JARs con todo el aprovicionamiento para ver la solucion, para ello debe copiar el archivo `.env.template-run` (sin eliminarlo) y colocarlo como .env
+   adicional a ellos ejecutamos los siguientes comandos
+
+   ```docker compose  -f "docker-compose.yml" up -d --build postgres-local```
+   ```docker compose  -f "docker-compose.yml" up -d --build zookeeper-local```
+   ```docker compose  -f "docker-compose.yml" up -d --build kafka-local```
+
+3. Ejecutamos ```docker compose  -f "docker-compose.yml" up -d```
+4. Abrimos nuestra consola y ejecutamos o copiamos estos curls para que se nos faciliten en el postman
 
 Revisamos nuestros MS que esten arriba despues de que el Docker finalice
 ```
@@ -93,5 +102,9 @@ Aqui unas pruebas del flujo de como el MS interactua con Account -> Mono-Log -> 
 ![img.png](doc/img4.png)
 
 ![img.png](doc/img5.png)
+
+Aqui muestro otros escenarios de pruebas cuando se crea un cuenta con transaccion
+
+![img.png](doc/img6.png)
 
 Espero tener la oportunidad para explicarlo con mas detalle, excelente dia

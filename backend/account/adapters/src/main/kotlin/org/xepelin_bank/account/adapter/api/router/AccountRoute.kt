@@ -12,12 +12,10 @@ import org.xepelin_bank.account.adapter.api.dto.response.AccountIdGeneratedDTO
 import org.xepelin_bank.account.adapter.api.dto.response.BalanceAmountDTO
 import org.xepelin_bank.account.adapter.api.handler.AccountNumberHandler
 import org.xepelin_bank.account.adapter.api.handler.CreateAccountHandler
-import org.xepelin_bank.account.domain.kernel.Account
-import org.xepelin_bank.account.domain.kernel.AccountAmount
-import org.xepelin_bank.account.domain.kernel.AccountName
-import org.xepelin_bank.account.domain.kernel.AccountNumber
+import org.xepelin_bank.account.domain.kernel.*
 import org.xepelin_bank.account.domain.use_case.AccountUseCase
 import org.xepelin_bank.common.exceptions.NotFoundException
+import org.xepelin_bank.common.extensions.message.constants.BrandType
 import org.xepelin_bank.common.extensions.message.success.Message
 import org.xepelin_bank.infrastructure.vertx.http.AbstractRouter
 import org.xepelin_bank.infrastructure.vertx.http.mapper.StatusResponse
@@ -39,7 +37,7 @@ class AccountRoute @Inject constructor(
     private fun createAccount(routingContext: RoutingContext, createAccountDTO: CreateAccountDTO): Completable =
         UUID.randomUUID().let { key ->
             accountUseCase.publishAccountCommand(
-                key,
+                AccountId(key),
                 Account(
                     name = AccountName(createAccountDTO.accountName),
                     accountNumber = AccountNumber(createAccountDTO.accountNumber),
@@ -70,7 +68,7 @@ class AccountRoute @Inject constructor(
                     )
                 )
             )
-        }.onErrorResumeNext{
+        }.onErrorResumeNext {
             Completable.error(NotFoundException("account not found"))
         }
 }

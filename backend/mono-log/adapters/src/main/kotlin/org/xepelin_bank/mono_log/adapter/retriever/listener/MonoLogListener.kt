@@ -25,7 +25,7 @@ class MonoLogListener @Inject constructor(
 
     private val consumer: KafkaConsumer<String, JsonObject>
     private val monoLogSubscriber: MonoLogSubscriber
-    private val monoLogSubscriberOrchestrator : MonoLogSubscriberOrchestrator
+    private val monoLogSubscriberOrchestrator: MonoLogSubscriberOrchestrator
 
     init {
         this.consumer = client.configureConsumer()
@@ -47,9 +47,8 @@ class MonoLogListener @Inject constructor(
                     val accountId = AccountId(UUID.fromString(record.value().map { it.key }[0]))
                     when (record.topic()) {
                         Topics.CREATE_MONO_LOG_TOPIC.value -> {
-                            val createAccountCommand = record.value().getJsonObject(accountId.value().toString())
-                                .parseTo(CreateAccountCommand::class.java)
-                            this.monoLogSubscriberOrchestrator.consumer(accountId, createAccountCommand).subscribe()
+                            val commandOrEvent = record.value().getJsonObject(accountId.value().toString())
+                            this.monoLogSubscriberOrchestrator.consumer(accountId, commandOrEvent).subscribe()
                         }
 
                         Topics.UPDATE_MONO_LOG_TOPIC.value -> {
@@ -61,14 +60,8 @@ class MonoLogListener @Inject constructor(
                         }
 
                         Topics.COMPLETE_MONO_LOG_TOPIC.value -> {
-                            val createAccountCommand = record.value().getJsonObject(accountId.value().toString())
-                                .parseTo(CreateAccountCommand::class.java)
-                            this.monoLogSubscriber.consumer(
-                                accountId,
-                                EventType.COMPLETE_EVENT_TYPE,
-                                BrandType.ACCOUNT_BRAND_TYPE,
-                                createAccountCommand
-                            ).subscribe()
+                            val commandOrEvent = record.value().getJsonObject(accountId.value().toString())
+                            this.monoLogSubscriber.consumer(accountId, commandOrEvent).subscribe()
                         }
                     }
                 }

@@ -7,6 +7,6 @@ data class CreateAccountCommand(
     val accountName: String,
     @JsonProperty("account-number")
     val accountNumber: String,
-    @JsonProperty("amount")
     val amount: String,
+    val brand: String
 )

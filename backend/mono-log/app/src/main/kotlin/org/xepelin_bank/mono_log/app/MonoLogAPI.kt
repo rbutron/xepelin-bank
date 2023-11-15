@@ -17,11 +17,11 @@ object MonoLogAPI {
         jsonDeserialize()
         val injector = Guice.createInjector(ModuleCreator(vertx))
         val main = injector.getInstance(MainMonoLogVerticle::class.java)
-        val accountListener = injector.getInstance(MonoLogListener::class.java)
+        val monoLogListener = injector.getInstance(MonoLogListener::class.java)
 
         vertx.rxDeployVerticle(main).subscribe(MonoLogAPI::logInfo, MonoLogAPI::logError)
 
-        accountListener.listen().subscribe()
+        monoLogListener.listen().subscribe()
 
         Runtime.getRuntime().addShutdownHook(Thread {
             logger.info("Closing application")

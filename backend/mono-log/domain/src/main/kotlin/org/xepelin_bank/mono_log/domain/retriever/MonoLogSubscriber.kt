@@ -6,5 +6,5 @@ import org.xepelin_bank.common.extensions.message.constants.EventType
 import org.xepelin_bank.mono_log.domain.kernel.account.AccountId
 
 interface MonoLogSubscriber {
-    fun consumer(accountId: AccountId, eventType: EventType, brandType: BrandType, commandOrEvent: Any): Completable
+    fun consumer(accountId: AccountId, commandOrEvent: Any): Completable
 }

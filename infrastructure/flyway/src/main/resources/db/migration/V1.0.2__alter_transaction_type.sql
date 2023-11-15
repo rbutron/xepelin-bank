@@ -1,0 +1,1 @@
+ALTER TYPE brand_type ADD VALUE 'TRANSACTION';
