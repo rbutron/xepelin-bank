@@ -33,7 +33,7 @@ class AccountRoute @Inject constructor(
     override fun create(): Router = Router.router(vertx).apply {
         post("/v1/create")
             .handler(CreateAccountHandler(::createAccount))
-        get("/v1/account/:accountId/balance")
+        get("/v1/:accountId/balance")
             .handler(AccountNumberHandler(::getAccount))
     }
 

@@ -35,7 +35,7 @@ class AccountListener @Inject constructor(
                     when (record.topic()) {
                         Topics.CREATE_ACCOUNT_TOPIC.value,
                         Topics.EXISTING_ACCOUNT_TOPIC.value -> {
-                            val accountId = AccountId(UUID.fromString(record.value().map { it.key }[0]))
+                            val accountId = AccountId(UUID.fromString(record.value().map { it.key }.first()))
                             val commandOrEvent = record.value().getJsonObject(accountId.value().toString())
                             this.accountSubscriber.consumer(accountId, commandOrEvent).subscribe()
                         }

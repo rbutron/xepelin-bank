@@ -94,11 +94,11 @@ curl --location 'http://localhost:9040/account/api/v1/create' \
 Si queremos revisar nuestro balance mira el enlace de abajo :v
 
 ```
-curl --location 'http://localhost:9040/account/api/v1/account/02da8662-e600-4364-b4c0-d80203fb723a/balance'
+curl --location 'http://localhost:9040/account/api/v1/02da8662-e600-4364-b4c0-d80203fb723a/balance'
 
 o
 
-curl --location 'http://localhost:9040/account/api/v1/account/:accountId/balance'
+curl --location 'http://localhost:9040/account/api/v1/:accountId/balance'
 ```
 
 Y por ultimo si queremos afectar nuestro balance veamos el siguiente link
@@ -141,5 +141,9 @@ En esta parte muestro el escenario de transacciones
 ![img.png](doc/img8.png)
 
 ![img.png](doc/img7.png)
+
+Y por ultimo la implementacion del Middleware que presta como principio un handler para imprimir el valor superado por 10,000 US$
+
+![img.png](doc/img9.png)
 
 Espero tener la oportunidad para explicarlo con mas detalle, excelente dia

@@ -44,7 +44,7 @@ class MonoLogListener @Inject constructor(
         )
             .andThen {
                 this.consumer.handler { record ->
-                    val accountId = AccountId(UUID.fromString(record.value().map { it.key }[0]))
+                    val accountId = AccountId(UUID.fromString(record.value().map { it.key }.first()))
                     when (record.topic()) {
                         Topics.CREATE_MONO_LOG_TOPIC.value -> {
                             val commandOrEvent = record.value().getJsonObject(accountId.value().toString())

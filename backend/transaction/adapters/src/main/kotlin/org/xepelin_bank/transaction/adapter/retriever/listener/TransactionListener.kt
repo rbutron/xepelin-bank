@@ -7,6 +7,7 @@ import io.vertx.rxjava3.kafka.client.consumer.KafkaConsumer
 import org.xepelin_bank.common.extensions.SystemExtension.parseTo
 import org.xepelin_bank.common.extensions.message.constants.Topics
 import org.xepelin_bank.infrastructure.vertx.kafka.KafkaConsumerClient
+import org.xepelin_bank.transaction.adapter.api.handler.RecordAmountHandler
 import org.xepelin_bank.transaction.adapter.retriever.TransactionExistingAccountSubscriberImpl
 import org.xepelin_bank.transaction.adapter.retriever.TransactionNewAccountSubscriberImpl
 import org.xepelin_bank.transaction.domain.command.CreateTransactionBalanceCommand
@@ -38,9 +39,8 @@ class TransactionListener @Inject constructor(
                 Topics.EXISTING_ACCOUNT_TRANSACTION_TOPIC.value
             )
         ).andThen {
-
             this.consumer.handler { record ->
-                val accountId = AccountId(UUID.fromString(record.value().map { it.key }[0]))
+                val accountId = AccountId(UUID.fromString(record.value().map { it.key }.first()))
                 val createTransactionBalanceCommand = record.value().getJsonObject(accountId.value().toString())
                     .parseTo(CreateTransactionBalanceCommand::class.java)
                 when (record.topic()) {
@@ -61,6 +61,6 @@ class TransactionListener @Inject constructor(
                         }
                     }
                 }
-            }
+            }.handler(::RecordAmountHandler)
         }
 }
