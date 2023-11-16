@@ -2,5 +2,6 @@ package org.xepelin_bank.common.extensions.message.constants
 
 enum class BrandType{
     ACCOUNT,
-    TRANSACTION
+    NEW_ACCOUNT_TRANSACTION,
+    EXISTING_ACCOUNT_TRANSACTION
 }

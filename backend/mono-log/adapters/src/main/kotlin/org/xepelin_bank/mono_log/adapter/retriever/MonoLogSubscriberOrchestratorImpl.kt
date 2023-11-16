@@ -31,12 +31,15 @@ class MonoLogSubscriberOrchestratorImpl(private val monoLogUseCase: MonoLogUseCa
                         commandOrEvent.mapTo(CreateAccountCommand::class.java)
                     )
 
-                    BrandType.TRANSACTION -> this.monoLogUseCase.publishTransactionCommand(
+                    BrandType.NEW_ACCOUNT_TRANSACTION -> this.monoLogUseCase.publishNewAccountTransactionCommand(
                         accountId,
                         commandOrEvent.mapTo(CreateTransactionBalanceCommand::class.java)
                     )
 
-                    else -> Completable.complete()
+                    BrandType.EXISTING_ACCOUNT_TRANSACTION -> this.monoLogUseCase.publishExistingAccountTransactionCommand(
+                        accountId,
+                        commandOrEvent.mapTo(CreateTransactionBalanceCommand::class.java)
+                    )
                 }
             )
         }

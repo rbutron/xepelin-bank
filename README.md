@@ -81,20 +81,49 @@ curl --location 'http://localhost:9020/mono-log/health-check'
 
 Por ultimo hacemos el proceso de creacion de cuenta 
 
-```curl --location 'http://localhost:9040/account/api/v1/account' \
+```
+curl --location 'http://localhost:9040/account/api/v1/create' \
 --header 'Content-Type: application/json' \
 --data '{
 "account-name": "Tu Nombre",
 "account-number": "123456",
-"amount": "80"
+"amount": "15080"
 }
 '
 ```
 Si queremos revisar nuestro balance mira el enlace de abajo :v
 
 ```
-curl --location 'http://localhost:9040/account/api/v1/account/bd6df63f-1636-4470-9bd6-5b24631f71ac/balance'
+curl --location 'http://localhost:9040/account/api/v1/account/02da8662-e600-4364-b4c0-d80203fb723a/balance'
+
+o
+
+curl --location 'http://localhost:9040/account/api/v1/account/:accountId/balance'
 ```
+
+Y por ultimo si queremos afectar nuestro balance veamos el siguiente link
+
+```
+curl --location 'http://localhost:9030/transaction/api/v1/create' \
+--header 'Content-Type: application/json' \
+--data '{
+    "transaction-type": "DEPOSIT",
+    "account-id": "02da8662-e600-4364-b4c0-d80203fb723a",
+    "amount": "200"
+}'
+
+o
+
+curl --location 'http://localhost:9030/transaction/api/v1/create' \
+--header 'Content-Type: application/json' \
+--data '{
+    "transaction-type": "WITHDRAWAL",
+    "account-id": "02da8662-e600-4364-b4c0-d80203fb723a",
+    "amount": "200"
+}'
+
+```
+
 Aqui unas pruebas del flujo de como el MS interactua con Account -> Mono-Log -> Account, para dejar track de todo los procesos que hacen lo comando y eventos
 
 ![img.png](doc/img0.png)
@@ -106,5 +135,11 @@ Aqui unas pruebas del flujo de como el MS interactua con Account -> Mono-Log -> 
 Aqui muestro otros escenarios de pruebas cuando se crea un cuenta con transaccion
 
 ![img.png](doc/img6.png)
+
+En esta parte muestro el escenario de transacciones
+
+![img.png](doc/img8.png)
+
+![img.png](doc/img7.png)
 
 Espero tener la oportunidad para explicarlo con mas detalle, excelente dia

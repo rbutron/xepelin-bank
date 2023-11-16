@@ -6,16 +6,19 @@ import io.reactivex.rxjava3.core.Completable
 import io.vertx.rxjava3.core.Vertx
 import io.vertx.rxjava3.ext.web.Router
 import io.vertx.rxjava3.ext.web.RoutingContext
-import org.xepelin_bank.account.adapter.api.dto.request.AccountNumberDTO
+import org.xepelin_bank.account.adapter.api.dto.request.AccountIdDTO
 import org.xepelin_bank.account.adapter.api.dto.request.CreateAccountDTO
 import org.xepelin_bank.account.adapter.api.dto.response.AccountIdGeneratedDTO
 import org.xepelin_bank.account.adapter.api.dto.response.BalanceAmountDTO
 import org.xepelin_bank.account.adapter.api.handler.AccountNumberHandler
 import org.xepelin_bank.account.adapter.api.handler.CreateAccountHandler
-import org.xepelin_bank.account.domain.kernel.*
+import org.xepelin_bank.account.domain.kernel.Account
+import org.xepelin_bank.account.domain.kernel.AccountId
+import org.xepelin_bank.account.domain.kernel.AccountName
+import org.xepelin_bank.account.domain.kernel.AccountNumber
+import org.xepelin_bank.account.domain.kernel.AccountAmount
 import org.xepelin_bank.account.domain.use_case.AccountUseCase
 import org.xepelin_bank.common.exceptions.NotFoundException
-import org.xepelin_bank.common.extensions.message.constants.BrandType
 import org.xepelin_bank.common.extensions.message.success.Message
 import org.xepelin_bank.infrastructure.vertx.http.AbstractRouter
 import org.xepelin_bank.infrastructure.vertx.http.mapper.StatusResponse
@@ -28,9 +31,9 @@ class AccountRoute @Inject constructor(
     override fun getPath(): String = "/api"
 
     override fun create(): Router = Router.router(vertx).apply {
-        post("/v1/account")
+        post("/v1/create")
             .handler(CreateAccountHandler(::createAccount))
-        get("/v1/account/:accountNumber/balance")
+        get("/v1/account/:accountId/balance")
             .handler(AccountNumberHandler(::getAccount))
     }
 
@@ -55,10 +58,10 @@ class AccountRoute @Inject constructor(
                 )
         }
 
-    private fun getAccount(routingContext: RoutingContext, accountNumberDTO: AccountNumberDTO): Completable =
+    private fun getAccount(routingContext: RoutingContext, accountIdDTO: AccountIdDTO): Completable =
         accountUseCase.getAccount(
-            AccountNumber(
-                accountNumberDTO.accountNumber
+            AccountId(
+                UUID.fromString(accountIdDTO.accountId)
             )
         ).concatMapCompletable { accountAmount ->
             completeResponseJson(

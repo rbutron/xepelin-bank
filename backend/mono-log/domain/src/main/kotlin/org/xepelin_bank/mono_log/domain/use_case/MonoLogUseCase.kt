@@ -9,5 +9,7 @@ import org.xepelin_bank.mono_log.domain.kernel.account.AccountId
 interface MonoLogUseCase {
     fun createMonoLog(monoLog: MonoLog): Completable
     fun publishAccountCommand(accountId: AccountId, createAccountCommand: CreateAccountCommand): Completable
-    fun publishTransactionCommand(accountId: AccountId, createAccountCommand: CreateTransactionBalanceCommand): Completable
+    fun publishNewAccountTransactionCommand(accountId: AccountId, createAccountCommand: CreateTransactionBalanceCommand): Completable
+    fun publishExistingAccountTransactionCommand(accountId: AccountId, createTransactionBalanceCommand: CreateTransactionBalanceCommand): Completable
+
 }

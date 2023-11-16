@@ -52,7 +52,8 @@ class MonoLogListener @Inject constructor(
                         }
 
                         Topics.UPDATE_MONO_LOG_TOPIC.value -> {
-                            //TODO("On the next step the app will be able to work with this section")
+                            val commandOrEvent = record.value().getJsonObject(accountId.value().toString())
+                            this.monoLogSubscriber.consumer(accountId, commandOrEvent, EventType.UPDATE_EVENT_TYPE).subscribe()
                         }
 
                         Topics.DELETE_MONO_LOG_TOPIC.value -> {
@@ -61,7 +62,7 @@ class MonoLogListener @Inject constructor(
 
                         Topics.COMPLETE_MONO_LOG_TOPIC.value -> {
                             val commandOrEvent = record.value().getJsonObject(accountId.value().toString())
-                            this.monoLogSubscriber.consumer(accountId, commandOrEvent).subscribe()
+                            this.monoLogSubscriber.consumer(accountId, commandOrEvent, EventType.COMPLETE_EVENT_TYPE).subscribe()
                         }
                     }
                 }

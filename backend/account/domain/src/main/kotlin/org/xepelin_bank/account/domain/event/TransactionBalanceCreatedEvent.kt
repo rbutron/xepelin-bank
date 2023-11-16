@@ -1,8 +1,8 @@
-package org.xepelin_bank.transaction.domain.event
+package org.xepelin_bank.account.domain.event
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class TransactionBalanceCreatedCommand(
+data class TransactionBalanceCreatedEvent(
     val amount: String,
     @JsonProperty("transaction-type")
     val transactionType: String,

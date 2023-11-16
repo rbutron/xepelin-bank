@@ -10,5 +10,5 @@ enum class Topics(val value: String) {
     COMPLETE_MONO_LOG_TOPIC("complete.mono-log"),
 
     NEW_ACCOUNT_TRANSACTION_TOPIC("new.account.transaction"),
-    EXISTING_ACCOUNT_TRANSACTION_TOPIC("existing.account.account.transaction")
+    EXISTING_ACCOUNT_TRANSACTION_TOPIC("existing.account.transaction")
 }
