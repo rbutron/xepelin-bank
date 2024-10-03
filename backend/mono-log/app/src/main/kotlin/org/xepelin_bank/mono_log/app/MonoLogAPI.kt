@@ -19,14 +19,14 @@ object MonoLogAPI {
         val main = injector.getInstance(MainMonoLogVerticle::class.java)
         val monoLogListener = injector.getInstance(MonoLogListener::class.java)
 
-        vertx.rxDeployVerticle(main).subscribe(MonoLogAPI::logInfo, MonoLogAPI::logError)
+        vertx.rxDeployVerticle(main).doFinally {
+            Runtime.getRuntime().addShutdownHook(Thread {
+                logger.warn("Closing application")
+                vertx.rxClose().subscribe()
+            })
+        }.subscribe(::logInfo, ::logError)
 
-        monoLogListener.listen().subscribe()
-
-        Runtime.getRuntime().addShutdownHook(Thread {
-            logger.info("Closing application")
-            vertx.rxClose().subscribe()
-        })
+        monoLogListener.listen().subscribe({}, ::logError)
     }
 
     private fun logError(throwable: Throwable) {

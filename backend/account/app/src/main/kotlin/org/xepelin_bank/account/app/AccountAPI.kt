@@ -19,14 +19,14 @@ object AccountAPI {
         val main = injector.getInstance(MainAccountVerticle::class.java)
         val accountListener = injector.getInstance(AccountListener::class.java)
 
-        vertx.rxDeployVerticle(main).subscribe(::logInfo, ::logError)
+        vertx.rxDeployVerticle(main).doFinally {
+            Runtime.getRuntime().addShutdownHook(Thread {
+                logger.warn("Closing application")
+                vertx.rxClose().subscribe()
+            })
+        }.subscribe(::logInfo, ::logError)
 
-        accountListener.listen().subscribe()
-
-        Runtime.getRuntime().addShutdownHook(Thread {
-            logger.info("Closing application")
-            vertx.rxClose().subscribe()
-        })
+        accountListener.listen().subscribe({}, ::logError)
     }
 
     private fun logError(throwable: Throwable) {

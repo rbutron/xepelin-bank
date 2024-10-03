@@ -19,14 +19,14 @@ object TransactionAPI {
         val main = injector.getInstance(MainTransactionVerticle::class.java)
         val transactionListener = injector.getInstance(TransactionListener::class.java)
 
-        vertx.rxDeployVerticle(main).subscribe(TransactionAPI::logInfo, TransactionAPI::logError)
+        vertx.rxDeployVerticle(main).doFinally {
+            Runtime.getRuntime().addShutdownHook(Thread {
+                logger.warn("Closing application")
+                vertx.rxClose().subscribe()
+            })
+        }.subscribe(::logInfo, ::logError)
 
-        transactionListener.listen().subscribe()
-
-        Runtime.getRuntime().addShutdownHook(Thread {
-            logger.info("Closing application")
-            vertx.rxClose().subscribe()
-        })
+        transactionListener.listen().subscribe({}, ::logError)
     }
 
     private fun logError(throwable: Throwable) {
